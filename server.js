@@ -1,10 +1,33 @@
 //  OpenShift sample Node application
 var express = require('express');
+var path = require('path');
+var favicon = require('serve-favicon');
+var logger = require('morgan');
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+var http = require('http');
 var fs      = require('fs');
-var app     = express();
 var eps     = require('ejs');
+var monk = require('monk');
 
+
+var routes = require('./routes/index');
+var users = require('./routes/users');
+
+var app     = express();
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'html');
 app.engine('html', require('ejs').renderFile);
+
+// uncomment after placing your favicon in /public
+//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(logger('dev'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
 
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080;
 var ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
@@ -50,28 +73,17 @@ var initDb = function(callback) {
   });
 };
 
-app.get('/', function (req, res) {
-  if (db) {
-    var col = db.collection('counts');
-    // Create a document with request IP and current time of request
-    col.insert({ip: req.ip, date: Date.now()});
-    col.count(function(err, count){
-      res.render('index.html', { pageCountMessage : count, dbInfo: dbDetails });
-    });
-  } else {
-    res.render('index.html', { pageCountMessage : null});
-  }
+
+// Make our db accessible to our router
+app.use(function(req,res,next){
+    console.log("in app use db ");
+    req.db = db;
+    next();
 });
 
-app.get('/pagecount', function (req, res) {
-  if (db) {
-    db.collection('counts').count(function(err, count ){
-      res.send('{ pageCount: ' + count +'}');
-    });
-  } else { 
-    res.send('{ pageCount: -1 }');
-  }
-});
+app.use('/', routes);
+app.use('/users', users);
+
 
 // error handling
 app.use(function(err, req, res, next){
@@ -82,6 +94,8 @@ app.use(function(err, req, res, next){
 initDb(function(err){
   console.log('Error connecting to Mongo. Message:\n'+err);
 });
+
+module.exports = app;
 
 app.listen(port, ip);
 console.log('Server running on ' + ip + ':' + port);
