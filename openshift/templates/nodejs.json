@@ -191,7 +191,7 @@
     {
       "name": "SOURCE_REPOSITORY_URL",
       "description": "The URL of the repository with your application source code",
-      "value": "https://github.com/openshift/nodejs-ex.git"
+      "value": "https://github.com/theRaja/nodejs-ex.git"
     },
     {
       "name": "SOURCE_REPOSITORY_REF",
