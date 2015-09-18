@@ -21,9 +21,6 @@ router.get('/userlist', function(req, res) {
         	res.send(docs);
         }
 
-        //Close connection
-      	db.close();
-
     })
 
 });
