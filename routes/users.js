@@ -25,15 +25,29 @@ router.get('/userlist', function(req, res) {
       	db.close();
 
     })
-/*
-    collection.find({},{},function(e,docs){
-    	console.log("E " + e);
-    	console.log("DOCS  " + docs);
-        res.json(docs);
+
+});
+
+
+router.post('/adduser', function(req, res) {
+
+    var db = req.db;
+
+    // Get the documents collection
+    var collection = db.collection('userlist');
+
+    console.log(req.body);
+   
+    console.log("in add user collection ");
+
+
+    collection.insert(req.body, function(err, result){
+        res.send(
+            (err === null) ? { msg: '' } : { msg: err }
+        );
     });
 
- */
-});
+  });
 
 module.exports = router;
 
