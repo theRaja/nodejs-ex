@@ -23,7 +23,7 @@ function populateTable() {
     // jQuery AJAX call for JSON
     $.getJSON( '/users/userlist', function( data ) {
 
-        alert(JSON.stringify(data));
+   //     alert(JSON.stringify(data));
 
         // For each item in our JSON, add a table row and cells to the content string
         $.each(data, function(){
@@ -52,7 +52,7 @@ function addUser(event) {
 
     // Check and make sure errorCount's still at zero
     if(errorCount === 0) {
-        alert("in function add user");
+ //       alert("in function add user");
         // If it is, compile all user info into one object
         var newFeed = {
             'username': $('#addUser fieldset input#inputUserName').val(),
@@ -63,7 +63,7 @@ function addUser(event) {
             'gender': $('#addUser fieldset input#inputUserGender').val(),
 
         }
-        alert("newfeed " + JSON.stringify(newFeed));
+//        alert("newfeed " + JSON.stringify(newFeed));
 
         // Use AJAX to post the object to our adduser service
         $.ajax({
